@@ -1,0 +1,22 @@
+{
+  "description" : "auditbeat",
+  "processors" : [
+    { "set":          { "if": "ctx.event?.category != null",   "field": "event.dataset", "value": "{{event.category}}", "override": true } },
+    { "set":          { "if": "ctx.process?.title != null",   "field": "process.command_line", "value": "{{process.title}}", "override": true } },
+    { "gsub":         { "field": "event.dataset",    "pattern": "[{0=}]", "replacement": ""  } },
+    { "gsub":         { "field": "event.dataset",    "pattern": "\\d", "replacement": ""  } },
+    { "set":          { "if": "ctx.event?.dataset != null && ctx.event.dataset.contains('network')", "field": "event.dataset", "value": "network_connection", "override": true }  }, 
+    { "set":          { "if": "ctx.event?.dataset != null && ctx.event.dataset.contains('process')", "field": "event.dataset", "value": "process_creation", "override": true }  },
+    { "rename":       { "field": "process.parent.pid", "target_field": "process.ppid",  "ignore_missing": true  } },
+    { "rename":       { "field": "parent.process.args", "target_field": "process.parent.args", "ignore_missing": true  } },
+    { "rename":       { "field": "parent.process.executable", "target_field": "process.parent.executable",  "ignore_missing": true  } },
+    { "rename":       { "field": "parent.process.name", "target_field": "process.parent.name",  "ignore_missing": true  } },
+    { "rename":       { "field": "parent.process.owner.id", "target_field": "process.parent.owner.id",  "ignore_missing": true  } },
+    { "rename":       { "field": "parent.process.owner.name", "target_field": "process.parent.owner.name",  "ignore_missing": true  } },
+    { "rename":       { "field": "parent.process.parent.pid", "target_field": "process.parent.parent.pid",  "ignore_missing": true  } },
+    { "rename":       { "field": "parent.process.pid", "target_field": "process.parent.pid",  "ignore_missing": true  } },
+    { "rename":       { "field": "parent.process.start_time", "target_field": "process.parent.start_time",  "ignore_missing": true  } },
+    { "rename":       { "field": "parent.process.title", "target_field": "process.parent.title",  "ignore_missing": true  } },
+    { "community_id": {} }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "description" : "beats.common",
+  "processors" : [
+    { "pipeline":      { "if": "ctx.agent?.type == 'auditbeat'",  "name": "auditbeat" }  },
+    { "pipeline":      { "if": "ctx.agent?.name == 'laurel'",  "name": "laurel" }  },
+    { "pipeline":      { "if": "ctx.winlog?.channel == 'Microsoft-Windows-Sysmon/Operational'",   "name": "sysmon"  }  },
+    { "pipeline":      { "if": "ctx.winlog?.channel == 'Linux-Sysmon/Operational'",  "name": "linux_sysmon" }  },
+    { "pipeline":      { "if": "ctx.winlog?.channel != 'Microsoft-Windows-Sysmon/Operational' && ctx.winlog?.channel != 'Linux-Sysmon/Operational' && ctx.containsKey('winlog')",  "name":"win.eventlogs" }  },
+    { "pipeline":    { "name": "common" } }
+  ]
+}
